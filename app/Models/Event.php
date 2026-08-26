@@ -16,7 +16,6 @@ class Event extends Model
         'published_at',
     ];
 
-    // Belangrijk: Many-to-Many relatie toevoegen
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
