@@ -6,7 +6,7 @@
 
                 @if($event->image)
                     <div class="mb-6">
-                        <img src="{{ Storage::url($event->image) }}" alt="{{ $event->title }}" class="w-full h-96 object-cover rounded-lg shadow">
+                        <img src="{{ Str::startsWith($event->image, 'http') ? $event->image : asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="max-w-md w-full h-auto max-h-64 mx-auto object-cover rounded shadow">
                     </div>
                 @endif
 
