@@ -58,7 +58,12 @@
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
                 >{{ __('Saved.') }}</p>
-            @endif
+           @if($user->profile_picture)
+    <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-2">Huidige Profielfoto:</p>
+        <img src="{{ Storage::url($user->profile_picture) }}" alt="Profielfoto" class="w-24 h-24 rounded-full object-cover border">
+    </div>
+@endif
         </div>
     </form>
 </section>

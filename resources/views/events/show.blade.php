@@ -1,53 +1,33 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $event->title }}</h2>
-    </x-slot>
-
     <div class="py-12">
-        <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
-            @if($event->image)
-                <img src="{{ asset('storage/' . $event->image) }}" class="w-full h-64 object-cover rounded mb-4">
-            @endif
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <h1 class="text-3xl font-bold mb-4">{{ $event->title }}</h1>
 
-            <div class="flex gap-2 mb-4">
-                @foreach($event->tags as $tag)
-                    <span class="bg-gray-200 text-sm px-2 py-1 rounded">#{{ $tag->name }}</span>
-                @endforeach
-            </div>
-
-            <p class="text-gray-700 whitespace-pre-line mb-6">{{ $event->content }}</p>
-
-            <a href="{{ route('events.index') }}" class="text-blue-500 hover:underline">&larr; Terug naar overzicht</a>
-       <div class="mt-8 border-t pt-6">
-    <h3 class="text-lg font-bold mb-4">Reacties</h3>
-
-    @auth
-        <form action="{{ route('comments.store', $event) }}" method="POST" class="mb-6">
-            @csrf
-            <textarea name="body" class="w-full border rounded p-2" rows="3" placeholder="Plaats een reactie..." required></textarea>
-            <button type="submit" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded text-sm">Plaatsen</button>
-        </form>
-    @else
-        <p class="text-sm text-gray-500 mb-4"><a href="{{ route('login') }}" class="text-blue-500 underline">Log in</a> om te reageren.</p>
-    @endauth
-
-    <div class="space-y-4">
-        @foreach($event->comments as $comment)
-            <div class="bg-gray-50 p-3 rounded flex justify-between items-start">
-                <div>
-                    <span class="font-bold text-sm">{{ $comment->user->name }}</span>
-                    <span class="text-xs text-gray-500 ml-2">{{ $comment->created_at->diffForHumans() }}</span>
-                    <p class="text-gray-700 text-sm mt-1">{{ $comment->body }}</p>
-                </div>
-                @if(auth()->check() && (auth()->id() === $comment->user_id || auth()->user()->is_admin))
-                    <form action="{{ route('comments.destroy', $comment) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-xs text-red-500">Verwijderen</button>
-                    </form>
+                @if($event->image)
+                    <div class="mb-6">
+                        <img src="{{ Storage::url($event->image) }}" alt="{{ $event->title }}" class="w-full h-96 object-cover rounded-lg shadow">
+                    </div>
                 @endif
+
+                <div class="prose max-w-none mb-6">
+                    <p>{{ $event->content }}</p>
+                </div>
+
+                @if($event->tags && $event->tags->count() > 0)
+                    <div class="flex gap-2 mb-6">
+                        @foreach($event->tags as $tag)
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                                #{{ $tag->name }}
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
+
+                <a href="{{ route('events.index') }}" class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                    &larr; Terug naar overzicht
+                </a>
             </div>
-        @endforeach
+        </div>
     </div>
-</div>
 </x-app-layout>

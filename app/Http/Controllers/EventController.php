@@ -26,7 +26,7 @@ class EventController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'tags' => 'nullable|array',
         ]);
 
@@ -40,11 +40,12 @@ class EventController extends Controller
             $event->tags()->sync($request->tags);
         }
 
-        return redirect()->route('events.index')->with('success', 'Event aangemaakt!');
+        return redirect()->route('events.index')->with('success', 'Event succesvol aangemaakt!');
     }
 
     public function show(Event $event)
     {
+        $event->load(['tags', 'comments.user']);
         return view('events.show', compact('event'));
     }
 
@@ -59,11 +60,12 @@ class EventController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'tags' => 'nullable|array',
         ]);
 
         if ($request->hasFile('image')) {
+            // Verwijder oude afbeelding indien aanwezig
             if ($event->image) {
                 Storage::disk('public')->delete($event->image);
             }
@@ -72,13 +74,10 @@ class EventController extends Controller
 
         $event->update($validated);
 
-        if ($request->has('tags')) {
-            $event->tags()->sync($request->tags);
-        } else {
-            $event->tags()->detach();
-        }
+        // Sync tags (of koppel los als er geen zijn geselecteerd)
+        $event->tags()->sync($request->input('tags', []));
 
-        return redirect()->route('events.index')->with('success', 'Event bijgewerkt!');
+        return redirect()->route('events.index')->with('success', 'Event succesvol bijgewerkt!');
     }
 
     public function destroy(Event $event)
@@ -89,6 +88,6 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('events.index')->with('success', 'Event verwijderd!');
+        return redirect()->route('events.index')->with('success', 'Event succesvol verwijderd!');
     }
 }
