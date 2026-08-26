@@ -3,10 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Event;
 use App\Models\FaqCategory;
 use App\Models\FaqItem;
-use App\Models\Event;
-use App\Models\Tag;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,30 +13,30 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        
-        User::create([
-            'name' => 'Admin Festivo',
-            'username' => 'admin',
-            'email' => 'admin@ehb.be',
-            'password' => Hash::make('Password!321'),
-            'is_admin' => true,
-        ]);
+        // 1. Admin Gebruiker
+        User::updateOrCreate(
+            ['email' => 'admin@ehb.be'],
+            [
+                'name' => 'Admin',
+                'username' => 'admin',
+                'password' => Hash::make('Password!321'),
+                'is_admin' => true,
+            ]
+        );
 
-       
-        $cat = FaqCategory::create(['name' => 'Tickets & Toegang']);
-        FaqItem::create([
-            'faq_category_id' => $cat->id,
-            'question' => 'Hoe ontvang ik mijn e-tickets?',
-            'answer' => 'Na je reservering ontvang je de e-tickets direct per e-mail.',
-        ]);
-
-        
-        $event = Event::create([
-            'title' => 'Festivo Opening Night 2026',
-            'content' => 'Het grootste openingsfeest van het seizoen in hartje Brussel.',
+        // 2. Test Events
+        Event::create([
+            'title' => 'Festivo Zomerfestival 2026',
+            'content' => 'Het leukste festival van het jaar in Brussel!',
             'published_at' => now(),
         ]);
-        $tag = Tag::create(['name' => 'Festival']);
-        $event->tags()->attach($tag->id);
+
+        // 3. FAQ Categorie & Item
+        $cat = FaqCategory::create(['name' => 'Algemeen']);
+        FaqItem::create([
+            'faq_category_id' => $cat->id,
+            'question' => 'Hoe kan ik tickets kopen?',
+            'answer' => 'Tickets zijn direct via het platform of aan de kassa verkrijgbaar.',
+        ]);
     }
 }
