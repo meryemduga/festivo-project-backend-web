@@ -1,7 +1,7 @@
 *.log
 .DS_Store
 .env
-.env.backup
+APP_DEBUG=true
 .env.production
 .phpactor.json
 .phpunit.result.cache
