@@ -4,7 +4,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h2 class="text-2xl font-bold mb-6">Event Bewerken</h2>
 
-                <form action="{{ route('admin.events.update', $event) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('admin.events.update', $event) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
 
@@ -19,21 +19,30 @@
                     </div>
 
                     <div>
-                        <x-input-label value="Huidige Afbeelding" />
-                        @if($event->image)
-                            <div class="mt-2 mb-4">
-                                <img src="{{ Storage::url($event->image) }}" alt="{{ $event->title }}" class="w-48 h-32 object-cover rounded-md border">
-                            </div>
-                        @else
-                            <p class="text-sm text-gray-500 mt-1 mb-2">Er is nog geen afbeelding gekoppeld aan dit event.</p>
-                        @endif
-
-                        <x-input-label for="image" value="Nieuwe Afbeelding uploaden (optioneel)" />
-                        <input id="image" name="image" type="file" class="mt-1 block w-full text-sm text-gray-500 border border-gray-300 rounded-md cursor-pointer p-2" />
+                        <x-input-label for="image" value="Afbeelding URL (bijv. https://images.unsplash.com/...)" />
+                        <x-text-input id="image" name="image" type="text" class="mt-1 block w-full" :value="old('image', $event->image)" placeholder="Plak hier een link naar een afbeelding" />
                     </div>
 
+                    @if(isset($tags) && $tags->count() > 0)
+                        <div>
+                            <x-input-label value="Tags selecteren" class="mb-2" />
+                            <div class="flex flex-wrap gap-4">
+                                @foreach($tags as $tag)
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
+                                            {{ $event->tags->contains($tag->id) ? 'checked' : '' }}
+                                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                        <span class="ml-2 text-sm text-gray-600">#{{ $tag->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <div>
-                        <x-primary-button>Bijwerken</x-primary-button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-indigo-700">
+                            Bijwerken
+                        </button>
                     </div>
                 </form>
             </div>
