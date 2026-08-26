@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique()->nullable(); // Toegevoegd voor profiel
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_admin')->default(false);     // Toegevoegd voor admin rol
+            $table->date('birthday')->nullable();             // Toegevoegd voor verjaardag
+            $table->string('profile_picture')->nullable();    // Toegevoegd voor profielfoto
+            $table->text('bio')->nullable();                  // Toegevoegd voor over mij
             $table->rememberToken();
             $table->timestamps();
         });
