@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
+use App\Models\ContactMessage;
 
 class ContactController extends Controller
 {
@@ -21,9 +22,16 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        // Stuur mail naar admin e-mailadres
+        // Opslaan in DB + e-mail sturen
+        ContactMessage::create($validated);
         Mail::to('admin@ehb.be')->send(new ContactFormMail($validated));
 
         return back()->with('success', 'Bedankt! Je bericht is succesvol verzonden.');
+    }
+
+    public function adminIndex()
+    {
+        $messages = ContactMessage::latest()->get();
+        return view('admin.messages.index', compact('messages'));
     }
 }

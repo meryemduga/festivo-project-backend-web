@@ -41,4 +41,14 @@ Route::get('/user/{username}', [UserController::class, 'showProfile'])->name('pr
 Route::middleware('auth')->group(function () {
     Route::get('/my-profile/edit', [UserController::class, 'editProfile'])->name('profile.custom-edit');
     Route::put('/my-profile', [UserController::class, 'updateProfile'])->name('profile.custom-update');
+});use App\Http\Controllers\AdminUserController;
+
+// Binnen de Route::middleware(['auth', 'admin'])->prefix('admin')->group(...)
+Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+Route::patch('/users/{user}/toggle-admin', [AdminUserController::class, 'toggleAdmin'])->name('admin.users.toggle-admin');Route::get('/messages', [ContactController::class, 'adminIndex'])->name('admin.messages.index');
+use App\Http\Controllers\CommentController;
+
+Route::middleware('auth')->group(function () {
+    Route::post('/events/{event}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });

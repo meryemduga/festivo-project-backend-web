@@ -11,8 +11,5 @@ class Event extends Model
 {
     protected $fillable = ['title', 'image', 'content', 'published_at'];
 
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
-    }
+public function comments() { return $this->hasMany(Comment::class); }
 }
