@@ -5,6 +5,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+
 
 // Publieke pagina's
 Route::get('/', [EventController::class, 'index'])->name('events.index');
@@ -32,3 +34,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 require __DIR__.'/auth.php';
+// Publiek profiel (voor iedereen toegankelijk)
+Route::get('/user/{username}', [UserController::class, 'showProfile'])->name('profile.show');
+
+// Eigen profiel bewerken (alleen ingelogd)
+Route::middleware('auth')->group(function () {
+    Route::get('/my-profile/edit', [UserController::class, 'editProfile'])->name('profile.custom-edit');
+    Route::put('/my-profile', [UserController::class, 'updateProfile'])->name('profile.custom-update');
+});
